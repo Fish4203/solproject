@@ -79,6 +79,6 @@ def getPlanet(request, planetName):
 
 def generate(request, name):
 
-
+    data = {}
 
     return JsonResponse(data)
