@@ -19,9 +19,10 @@ class Star(models.Model):
     def __str__(self):
         return self.name
 
-    def generate(self, name):
+    def generate(self, name, seed):
         self.name = name
-        random.seed = self.seed
+        self.seed = seed
+        random.seed = seed
 
         t_val = random.random()  # Temp variable
 
@@ -70,20 +71,95 @@ class Planet(models.Model):
     planetType = models.CharField(max_length=100)
     mass = models.IntegerField()
     radius = models.IntegerField()
-    temp = models.IntegerField()
+    temperature = models.IntegerField()
     atmos = models.IntegerField()
     seed = models.IntegerField()
-    rSpeed = models.IntegerField()
+    gravity = models.IntegerField()
+    tilt = models.IntegerField()
+    axis = models.IntegerField()
+    planetRadius = models.IntegerField()
     orbit = models.CharField(max_length=100)
     orbitRadius = models.IntegerField()
+
 
     moons = models.ManyToManyField('self')
 
     def __str__(self):
         return self.name
 
+    def generate(self, name, seed, lumen, minOrbit, ismoon=False):
+
+        # how can we estamate the temprature / solar radeation a planet recieves in a solar system?
+        # how can we aproxemate atmoshpears?
+        # how can we create a distrobution of planets in a semi acurate way
+
+        self.name = name
+        self.seed = seed
+        random.seed = seed
+
+
+        if minimum_orbit == 0 or minimum_orbit < 0 or minimum_orbit is None:
+            minimum_orbit = central_body.radius * 1.05 + 0.5*central_body.radius
+        self.radius = random.randrange(minimum_orbit, central_body.mass * 1000000000000000000000000000)  # In Solar radii (6.975*10^5km)  # Completely Arbitary, will need additional research but probably out of the scope of game
+
+        t_val = random.random()
+        if self.radius < central_body.radius * 300:
+            if t_val <= 0.5:
+                self.planetType = 'rock'
+            else:
+                self.planetType = 'gas'
+            # Rocky or Gas (0% ice planet)
+        if central_body.radius * 300 <= self.radius < central_body.radius * 700: # Semi habitable? Needs additional research
+            if t_val <= 0.45:
+                self.planetType = 'rock'
+            elif 0.45 < t_val <= 0.8:
+                self.planetType = 'gas'
+            else:
+                self.planetType = 'ice'
+            # Rocky or Gas or ice (45% rocky, 35% gas, 20% ice
+        else:
+            if t_val <= 0.1:
+                self.type = 'gas'
+            if 0.1 < t_val <= 0.55:
+                self.type = 'rock'
+            else:
+                self.type = 'ice'
+            # Rocky or ice (~10% of gas, 45% other)
+        self.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane
+        self.tilt = random.randrange(0, 90)  # Planet's axis tilt in degrees from vertical
+        self.planetRadius = math.floor(random.randrange(900, 0.05 * central_body.radius))  # The base radius of the planet itself in km
+        if self.planetType is 'gas':
+            # gassy things
+            self.mass = math.floor((4/3) * math.pi * self.planetRadius**3 * random.randrange(0.9, 1.8))  # in kg
+            self.atmos = None
+            self.temperature = random.randint(800, 1400)  # Surface temperature  in kelvin
+        if self.planetType is 'rock':
+            # rocky things
+            self.mass = math.floor((4/3) * math.pi * self.planetRadius**3 * random.randrange(0.8, 1.1))
+            self.atmos = random.randint(0, 1)
+            if self.atmos == 1:
+                self.temperature = random.randint(230, 380)  # Surface temperature
+            else:
+                self.temperature = random.randint(125, 800)
+        else:
+            # icy things
+            self.mass = math.floor((4/3) * math.pi * self.planetRadius**3 * random.randrange(0.9, 1.1))
+            self.atmos = random.randint(0, 1)
+            if self.atmos == 1:
+                self.temperature = random.randint(200, 270)
+            else:
+                self.temperature = random.randint(125, 270)  # Surface temperature
+        self.gravity = ((6.67*10**-11) * self.mass)/self.planetRadius**2  # Gravitational pull at planetRadius
+
+
+        for i in random.randint(0,3):
+            self.generate()
+
+
+
 class System(models.Model):
     name = models.CharField(max_length=100)
+    seed = models.CharField(max_length=100)
     stars = models.ManyToManyField(Star)
     planets = models.ManyToManyField(Planet)
     #ast = models.ManyToManyField(Ast)
