@@ -28,7 +28,10 @@ class Orbit(models.Model):
     # https://www.desmos.com/calculator/xr6lrvad5a
 
     a = models.FloatField() # semi major axis of the elipse Units: AU
+    exentricity = models.FloatField() # the ecentricity what do you want a phisics lession
     b = models.FloatField() # semi minor axis of the elipse Units: AU
+    p = models.FloatField() # idk what this means
+    period = models.FloatField() # ok now this one is ovious Units: seconds
     rotation = models.FloatField() # the rotation of the orbit around the center Units: deg
     bigM = models.FloatField() # the mass of the larger object Units: KG
 

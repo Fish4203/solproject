@@ -1,5 +1,6 @@
 from models import *
 import ramdom
+import math
 
 
 # v\left(l_{1}\sin\left(\frac{t_{1}^{2}}{a_{1}t_{2}}\right)+x_{1},h_{1}\cos\left(\frac{t_{1}^{2}}{a_{1}t_{2}}\right)+x_{2}\right)
@@ -107,13 +108,58 @@ def planetGen(name, seed, lumen, minOrbit, maxOrbit, ismoon=False):
 
         if t_val <= 0.3:
             planet.type = 'gas'
-            planet.mass = random.range(5.685*(10**6), 1.899*(10**7)) # i just put in the mass of jupeter and satern as endpoints Units: 10^20 kg
+            planet.mass = random.range(2.35938*(10**25), 6.86655*(10**26)) # Exoplanet data Units: kg
+            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441) # baised on exoplanet data extrapolation Units: AU
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = random.range(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.ecentricity = random.range(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.range(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
+
         if 0.3 < t_val <= 0.7:
             planet.type = 'rock'
-            planet.mass = random.range(3.301*(10**3), 5.972*(10**4)) # Units: 10^20 kg
+            planet.mass = random.range(3.301*(10**23), 5.972*(10**24)) # Our solarsystem data Units: kg
+            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
+
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = random.range(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.ecentricity = random.range(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.range(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
+
         else:
             planet.type = 'ice'
-            planet.mass = random.range(8.682*(10**5), 1.024*(10**6)) # Units: 10^20 kg
+            planet.mass = random.range(8.682*(10**25), 1.024*(10**26)) # Exoplanet data Units: kg
+            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
 
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = random.range(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.ecentricity = random.range(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.range(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
 
         planet.gravity = ((6.67*10**-11) * planet.mass)/planet.planetRadius**2  # Gravitational pull at planetRadius
