@@ -21,6 +21,7 @@ def getSystem(request, systemName):
 
         data = {
             'name': system.name,
+            'seed': system.seed,
             'stars': [i.name for i in system.stars.all()],
             'planets': [i.name for i in system.planets.all()],
         }
@@ -38,12 +39,21 @@ def getStar(request, starName):
         star = Star.objects.get(name=starName)
         data = {
             'name': star.name,
-            'sunType': star.sunType,
+            'seed': star.seed,
+            'starClass': star.starClass,
             'mass': star.mass,
             'radius': star.radius,
-            'temp': star.temp,
-            'orbit': star.orbit,
-            'orbitRadius': star.orbitRadius,
+            'temperature': star.temperature,
+
+            'orbit': {
+                'a': star.orbit.a,
+                'b': star.orbit.b,
+                'p': star.orbit.p,
+                'period': star.orbit.period,
+                'rotation': star.orbit.rotation,
+                'bigM': star.orbit.bigM,
+                'exentricity': star.orbit.exentricity
+            }
         }
     except:
         data = {
@@ -60,15 +70,40 @@ def getPlanet(request, planetName):
 
         data = {
             'name': planet.name,
-            'sunType': planet.sunType,
+            'seed': planet.seed,
+            'planetType': planet.planetType,
             'mass': planet.mass,
             'radius': planet.radius,
-            'temp': planet.temp,
-            'atmos': planet.atmos,
-            'seed': planet.seed,
-            'rSpeed': planet.rSpeed,
-            'orbit': planet.orbit,
-            'orbitRadius': planet.orbitRadius,
+            'gravity': planet.gravity,
+            'tilt': planet.tilt,
+            'axis': planet.axis,
+
+            'atmosphere': {
+                'presure': planet.atmosphere.presure,
+                'nitrogen': planet.atmosphere.nitrogen,
+                'oxygen': planet.atmosphere.oxygen,
+                'argon': planet.atmosphere.argon,
+                'carbonDioxide': planet.atmosphere.carbonDioxide,
+                'neon': planet.atmosphere.neon,
+                'helium': planet.atmosphere.helium,
+                'methane': planet.atmosphere.methane,
+                'sulpherDioxide': planet.atmosphere.sulpherDioxide,
+                'hydrogen': planet.atmosphere.hydrogen,
+                'sodium': planet.atmosphere.sodium,
+                'potasium': planet.atmosphere.potasium,
+            },
+
+            'orbit': {
+                'a': planet.orbit.a,
+                'b': planet.orbit.b,
+                'p': planet.orbit.p,
+                'period': planet.orbit.period,
+                'rotation': planet.orbit.rotation,
+                'bigM': planet.orbit.bigM,
+                'exentricity': planet.orbit.exentricity
+            },
+
+            'moons': [i.name for i in planet.moons.all()],
         }
     except:
         data = {

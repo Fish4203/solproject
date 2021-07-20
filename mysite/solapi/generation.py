@@ -28,7 +28,7 @@ def systemGen(name, seed):
     system.orbit = orbit
     system.save()
 
-    random.seed = system.seed
+    random.seed(system.seed)
 
     tempVal = random.randint(1,1)
 
@@ -60,7 +60,7 @@ def systemGen(name, seed):
 def starGen(name, seed):
     # this should be mostly done and working for unery systems
     star = Star(name=name, seed=seed)
-    random.seed = star.seed
+    random.seed(star.seed)
 
     t_val = random.random()  # Temp variable
 
@@ -120,7 +120,7 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     planet = Planet(name=name, seed=seed)
 
-    random.seed = planet.seed
+    random.seed(planet.seed)
 
     planet.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane # deg
     planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical # deg
@@ -252,7 +252,7 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     if ismoon == False:
         for i in range(0, random.randint(0,50)):
-            planet.moons.add(planetGen(name=name+'moon'+str(i), seed=str(random.random()), bigM=bigM, ismoon=True))
+            planet.moons.add(planetGen(name=name+'moon'+str(i), seed=str(random.random()), bigM=planet.mass, ismoon=True))
 
     planet.save()
 
