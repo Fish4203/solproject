@@ -50,42 +50,53 @@ def starGen(name, seed):
 
     if t_val <= 0.0000003:
         star.starClass = 'O'
-        star.mass = random.randrange(160000, 320000)  # *10^26 kilograms
-        star.radius = star.mass * 0.4125  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(160000 * (10**26), 320000 * (10**26))  # Units: kg
+        star.radius = star.mass * 0.4125  * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 42.6264386916 + 6666.67)  # Kelvin (many thousands) The area of the sun multiplies by the gradient of the relationship between area and termperate for its class
     elif 0.0000003 < t_val <= 0.0013003:
         star.starClass = 'B'
-        star.mass = random.randrange(21000, 160000)  # *10^26 kilograms
-        star.radius = star.mass * 0.345323741007 + 1.47842  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(21000 * (10**26), 160000 * (10**26))  # Units: kg
+        star.radius = star.mass * 0.345323741007 + 1.47842  * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 39.4729521557 + 8392.86)
     elif 0.0013003 < t_val <= 0.0073003:
         star.starClass = 'A'
-        star.mass = random.randrange(14000, 21000)  # *10^26 kilograms
-        star.radius = star.mass * 0.571428571429 + 0.6  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(14000 * (10**26), 21000 * (10**26))  # Units KG
+        star.radius = star.mass * 0.571428571429 + 0.6  * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 155.424749113 + 3671.88)
     elif 0.0073003 < t_val <= 0.0373003:
         star.starClass = 'F'
-        star.mass = random.randrange(10400, 14000)  # *10^26 kilograms
-        star.radius = star.mass * 0.694444444444 + 1.58333  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(10400 * (10**26), 14000 * (10**26))  # Units: kg
+        star.radius = star.mass * 0.694444444444 + 1.58333  * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 187.24110952 + 2888.24)
     elif 0.0373003 < t_val <= 0.1133:
         star.starClass = 'G'
-        star.mass = random.randrange(8000, 10400)  # *10^26 kilograms
-        star.radius = star.mass * 0.791666666667 + 0.326667  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(8000 * (10**26), 10400 * (10**26))  # Units Kg
+        star.radius = star.mass * 0.791666666667 + 0.326667  * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 158.797648383 + 3360.94)
     elif 0.1133 < t_val <= 0.2343:
         star.starClass = 'K'
-        star.mass = random.randrange(4500, 8000)  # *10^26 kilograms
-        star.radius = star.mass * 1.34615384615 + 0.365714  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(4500 * (10**26), 8000 * (10**26))  # Units: kg
+        star.radius = star.mass * 1.34615384615 + 0.365714 * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 276.56674541 + 1997.03)
     else:
         star.starClass = 'M'
-        star.mass = random.randrange(800, 4500)  # *10^26 kilograms
-        star.radius = star.mass * 1.75675675676 + -0.77973  # In Solar radii (6.975*10^5km)
+        star.mass = random.randrange(800 * (10**26), 4500 * (10**26))  # Units: kg
+        star.radius = star.mass * 1.75675675676 + -0.77973 * 6.975 * (10**5)  # Units: kg
         star.temperature = math.floor(4*math.pi*star.radius*star.radius * 212.206590789 + 2393.33)
 
+    orbit = Orbit()
+    orbit.a = 0
+    orbit.b = 0
+    orbit.p = 0
+    orbit.ecentricity = 0
+    orbit.BigM = 0
+    orbit.rotation = 0
+    orbit.period = 0
+    orbit.save()
 
+    star.orbit = orbit
 
+    star.save()
 
 def planetGen(name, seed, BigM, ismoon=False):
 

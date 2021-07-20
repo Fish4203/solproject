@@ -39,9 +39,9 @@ class Star(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
     starClass = models.CharField(max_length=100)
-    mass = models.IntegerField()
-    radius = models.IntegerField()
-    temperature = models.IntegerField()
+    mass = models.FloatField() # mass of the star  Units: kg
+    radius = models.FloatField() # radius of the star Units: AU
+    temperature = models.FloatField() # trmprature Units: kg 
 
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
 
@@ -58,7 +58,7 @@ class Planet(models.Model):
     radius = models.FloatField() # radius of the planet Units: AU
     gravity = models.FloatField() # gravity or little g Units: kgms^2 i think
     tilt = models.FloatField() # the tilt the planet of the spin from the sun Units: deg
-    axis = models.FloatField() # the tilt of the orbetal plane Units: deg 
+    axis = models.FloatField() # the tilt of the orbetal plane Units: deg
 
     atmosphere = models.OneToOneField(Atmosphere, on_delete=models.CASCADE)
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
