@@ -87,22 +87,58 @@ def starGen(name, seed):
 
 
 
-def planetGen(name, seed, lumen, minOrbit, maxOrbit, ismoon=False):
-
-    # how can we estamate the temprature / solar radeation a planet recieves in a solar system?
-    # how can we aproxemate atmoshpears?
-    # how can we create a distrobution of planets in a semi acurate way
+def planetGen(name, seed, BigM, ismoon=False):
 
     planet = Planet(name=name, seed=seed)
 
     random.seed = planet.seed
 
-    planet.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane
-    planet.tilt = random.randrange(0, 90)  # Planet's axis tilt in degrees from vertical
+    planet.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane # deg
+    planet.tilt = random.randrange(0, 90)  # Planet's axis tilt in degrees from vertical # deg
 
     if ismoone:
         # idk about moon stuff
-        pass
+        t_val = random.random()
+
+        if t_val <= 0.5:
+            planet.type = 'rock'
+            planet.mass = BigM * random.random() # Our solarsystem data Units: kg
+            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
+
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = random.range(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.ecentricity = random.range(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.range(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
+
+        else:
+            planet.type = 'ice'
+            planet.mass = BigM * random.random() # Exoplanet data Units: kg
+            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
+
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = random.range(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.ecentricity = random.range(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.range(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
+
+
     else:
         t_val = random.random()
 
@@ -124,7 +160,7 @@ def planetGen(name, seed, lumen, minOrbit, maxOrbit, ismoon=False):
 
             planet.orbit = orbit
 
-        if 0.3 < t_val <= 0.7:
+        elif 0.3 < t_val <= 0.7:
             planet.type = 'rock'
             planet.mass = random.range(3.301*(10**23), 5.972*(10**24)) # Our solarsystem data Units: kg
             planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
@@ -162,4 +198,24 @@ def planetGen(name, seed, lumen, minOrbit, maxOrbit, ismoon=False):
 
             planet.orbit = orbit
 
-        planet.gravity = ((6.67*10**-11) * planet.mass)/planet.planetRadius**2  # Gravitational pull at planetRadius
+        #atmoshpere stuff
+        atmosphere = Atmosphere()
+        atmosphere.presure = 0 # presure of the atmosphere Units: KPa
+        # all the rest are in percentages
+        atmosphere.nitrogen = 0
+        atmosphere.oxygen = 0
+        atmosphere.argon = 0
+        atmosphere.carbonDioxide = 0
+        atmosphere.neon = 0
+        atmosphere.helium = 0
+        atmosphere.methane = 0
+        atmosphere.sulpherDioxide = 0
+        atmosphere.hydrogen = 0
+        atmosphere.sodium = 0
+        atmosphere.potasium = 0
+        atmosphere.save()
+
+        planet.atmosphere = atmosphere
+        planet.gravity = ((6.67*10**-11) * planet.mass)/ (planet.radius * 149597900000)**2  # Gravitational pull at planetRadius
+
+        planet.save()
