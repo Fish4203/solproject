@@ -4,6 +4,7 @@ from django.urls import reverse
 #from django.views import generic
 from django.utils import timezone
 from .models import *
+from .generation import *
 # Create your views here.
 
 
@@ -77,8 +78,8 @@ def getPlanet(request, planetName):
 
     return JsonResponse(data)
 
-def generate(request, name):
+def generate(request, name, seed):
 
-    data = {}
+    systemGen(name, seed)
 
-    return JsonResponse(data)
+    return JsonResponse({'sucsess':True})

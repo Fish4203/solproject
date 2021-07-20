@@ -1,5 +1,5 @@
-from models import *
-import ramdom
+from .models import *
+import random
 import math
 
 
@@ -14,23 +14,37 @@ import math
 def systemGen(name, seed):
     system = System(name=name, seed=seed)
 
+    #orbit shit
+    orbit = Orbit()
+    orbit.a = 0
+    orbit.b = 0
+    orbit.p = 0
+    orbit.exentricity = 0
+    orbit.bigM = 0
+    orbit.rotation = 0
+    orbit.period = 0
+    orbit.save()
+
+    system.orbit = orbit
+    system.save()
+
     random.seed = system.seed
 
     tempVal = random.randint(1,1)
 
-    if tempVal = 1:
+    if tempVal == 1:
         # unery system with one star
-        star = starGen(name= name+'a', str(random.random()))
-        system.stars.add()
+        star = starGen(name= name+'star'+'a', seed=str(random.random()))
+        system.stars.add(star)
 
         bigM = star.mass
 
         for i in range(0, random.randint(0,10)):
             # how many planets are going to be gened
-            system.planets.add(planetGen(name=name+i, seed=str(random.random()), bigM=bigM))
+            system.planets.add(planetGen(name=name+'planet'+str(i), seed=str(random.random()), bigM=bigM))
 
 
-    elif tempVal = 2:
+    elif tempVal == 2:
         # binery system with 2 star
 
         system.stars.add(starGen())
@@ -90,8 +104,8 @@ def starGen(name, seed):
     orbit.a = 0
     orbit.b = 0
     orbit.p = 0
-    orbit.ecentricity = 0
-    orbit.BigM = 0
+    orbit.exentricity = 0
+    orbit.bigM = 0
     orbit.rotation = 0
     orbit.period = 0
     orbit.save()
@@ -111,7 +125,7 @@ def planetGen(name, seed, bigM, ismoon=False):
     planet.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane # deg
     planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical # deg
 
-    if ismoone:
+    if ismoon:
         # idk about moon stuff
         t_val = random.random()
 
@@ -124,31 +138,31 @@ def planetGen(name, seed, bigM, ismoon=False):
             # orbit shit
             orbit = Orbit()
             orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.ecentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.bigM = bigM # mass of the centrial body Units: kg
             orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
             orbit.save()
 
             planet.orbit = orbit
 
         else:
             planet.type = 'ice'
-            planet.mass = BigM * random.random() # Exoplanet data Units: kg
+            planet.mass = bigM * random.random() # Exoplanet data Units: kg
             planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
 
 
             # orbit shit
             orbit = Orbit()
             orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.ecentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.bigM = bigM # mass of the centrial body Units: kg
             orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
             orbit.save()
 
             planet.orbit = orbit
@@ -165,12 +179,12 @@ def planetGen(name, seed, bigM, ismoon=False):
             # orbit shit
             orbit = Orbit()
             orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.ecentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.bigM = bigM # mass of the centrial body Units: kg
             orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
             orbit.save()
 
             planet.orbit = orbit
@@ -184,12 +198,12 @@ def planetGen(name, seed, bigM, ismoon=False):
             # orbit shit
             orbit = Orbit()
             orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.ecentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.bigM = bigM # mass of the centrial body Units: kg
             orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
             orbit.save()
 
             planet.orbit = orbit
@@ -203,19 +217,16 @@ def planetGen(name, seed, bigM, ismoon=False):
             # orbit shit
             orbit = Orbit()
             orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.ecentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.ecentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.BigM = bigM # mass of the centrial body Units: kg
+            orbit.bigM = bigM # mass of the centrial body Units: kg
             orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.BigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
             orbit.save()
 
             planet.orbit = orbit
 
-
-        for i in range(0, random.randint(0,50):
-            planet.planets.add(planetGen(name=name+i, seed=str(random.random()), bigM=bigM), ismoon=True)
 
     #atmoshpere stuff
     atmosphere = Atmosphere()
@@ -236,6 +247,12 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     planet.atmosphere = atmosphere
     planet.gravity = ((6.67*10**-11) * planet.mass)/ (planet.radius * 149597900000)**2  # Gravitational pull at planetRadius
+
+    planet.save()
+
+    if ismoon == False:
+        for i in range(0, random.randint(0,50)):
+            planet.moons.add(planetGen(name=name+'moon'+str(i), seed=str(random.random()), bigM=bigM, ismoon=True))
 
     planet.save()
 

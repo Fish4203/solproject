@@ -7,4 +7,5 @@ urlpatterns = [
     path('getSystem/<str:systemName>', views.getSystem, name='getSystem'),
     path('getStar/<str:starName>', views.getStar, name='getStar'),
     path('getPlanet/<str:planetName>', views.getPlanet, name='getPlanet'),
+    path('generate/<str:name>/<str:seed>', views.generate, name='generate'),
 ]
