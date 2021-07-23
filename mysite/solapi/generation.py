@@ -56,6 +56,30 @@ def systemGen(name, seed):
             system.planets.add(planetGen())
 
 
+def asteroidGen(name, seed):
+    # idk what im doing
+    ast = Asteroid(name=name, seed=seed)
+    random.seed(ast.seed)
+
+    orbit = Orbit()
+    orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+    orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+    orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+    orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+    orbit.bigM = bigM # mass of the centrial body Units: kg
+    orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
+    orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+    orbit.save()
+
+    r = 0
+
+    # types
+    # C-type
+    # distance: 2 - 3.5
+    # makeup: 
+    # The S-types ("stony") are made up of silicate materials and nickel-iron.
+    # The M-types are metallic (nickel-iron). The asteroids' compositional differences are related to how far from the Sun they formed. Some experienced high temperatures after they formed and partly melted, with iron sinking to the center and forcing basaltic (volcanic) lava to the surface.
+
 
 def starGen(name, seed):
     # this should be mostly done and working for unery systems

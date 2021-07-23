@@ -41,7 +41,7 @@ class Star(models.Model):
     starClass = models.CharField(max_length=100)
     mass = models.FloatField() # mass of the star  Units: kg
     radius = models.FloatField() # radius of the star Units: AU
-    temperature = models.FloatField() # trmprature Units: kg 
+    temperature = models.FloatField() # trmprature Units: kg
 
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
 
@@ -69,13 +69,25 @@ class Planet(models.Model):
         return self.name
 
 
+class Asteroid(models.Model):
+    name = models.CharField(max_length=100)
+    seed = models.CharField(max_length=100)
+    type = models.CharField(max_length=100)
+
+    # richness
+    l = models.FloatField() # -10 to 10
+    k = models.FloatField() # -1 to 1
+
+    orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
+
+
 
 class System(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
     stars = models.ManyToManyField(Star)
     planets = models.ManyToManyField(Planet)
-    #ast = models.ManyToManyField(Ast)
+    asteroids = models.ManyToManyField(Asteroid)
 
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
 
