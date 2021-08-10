@@ -6,30 +6,29 @@ import random
 import math
 # Create your models here.
 
-class Componet(models.Model):
+class FactionRep(models.Model):
+    rep = models.IntegerField()
+    status = models.CharField(max_length=100)
+
+
+class Faction(models.Model):
     name = models.CharField(max_length=100)
-    faction = models.OneToOneField(Faction, on_delete=models.CASCADE)
+    cash = models.IntegerField()
+    stations = models.IntegerField() # placeholder
 
+    factions = models.ManyToManyField(FactionRep)
 
-class ShipType(models.Model):
+    players = models.ManyToManyField(FactionRep)
+
+class Player(models.Model):
     name = models.CharField(max_length=100)
-    faction = models.OneToOneField(Faction, on_delete=models.CASCADE)
-
-
-
-class Ship(models.Model):
-    name = models.CharField(max_length=100)
-    owner = models.OneToOneField(Player, on_delete=models.CASCADE)
-
-    shipType =
-
-
+    cash = models.IntegerField()
     locSystem = models.CharField(max_length=100)
     locX = models.FloatField()
     locY = models.FloatField()
     locZ = models.FloatField()
 
-
+    factions = models.ManyToManyField(FactionRep)
 
     def __str__(self):
         return self.name
