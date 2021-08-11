@@ -36,7 +36,7 @@
 # COLUMN pl_nespec:      Number of Emission Spectroscopy Measurements
 #
 
-# key: pname, sname, default, nstar, nplanets, nmoons, orbitalp, orbitSemiM, Radius, mass, density, ecentricity, insolar flux, eq temp, inclnation  
+# key: pname, sname, default, nstar, nplanets, nmoons, orbitalp, orbitSemiM, Radius, mass, density, ecentricity, insolar flux, eq temp, inclnation
 import time
 import csv
 
@@ -57,7 +57,7 @@ def avg(list):
         return 0
 
 # open the file in the write mode
-with open('super.csv', 'r') as f:
+with open('tera.csv', 'r') as f:
     # create the csv writer
     plantemp = csv.reader(f)
 
@@ -129,7 +129,7 @@ for key in planout:
 # #print(planout['Kepler-1566 b'])
 # print(planout, len(planout))
 #
-with open('superdata.csv', 'w') as f:
+with open('neptdata.csv', 'w') as f:
     # create the csv writer
     writer = csv.writer(f)
 
