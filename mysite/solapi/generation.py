@@ -1,7 +1,66 @@
 from .models import *
 import random
 import math
+import numpy as np
+from scipy import stats
 
+
+def mixtureDistribution(probli, distli):
+    return np.random.choice(distli,p=probli)
+
+def weibullDistribution(shape, scale, loc):
+    temp = -1
+    while temp < 0:
+        temp = float(stats.weibull_min.rvs(shape, loc=loc, scale=scale, size=1))
+    return temp
+
+def logNormalDistribution(loc, stdev):
+    temp = -1
+    while temp < 0:
+        temp = float(np.random.lognormal(loc, stdev, 1))
+    return temp
+
+def normalDistribution(loc, stdev):
+    temp = -1
+    while temp < 0:
+        temp = float(np.random.normal(loc, stdev, 1))
+    return temp
+
+def cauchyDistribution(loc, scale):
+    temp = -1
+    while temp < 0:
+        temp = float(stats.cauchy.rvs(loc=loc, scale=scale,  size=1))
+    return temp
+
+def studentTDistribution(loc, scale, free):
+    temp = -1
+    while temp < 0:
+        temp = float(stats.nct.rvs(loc=loc, df=free, nc=0, scale=scale, size=1))
+    return temp
+
+def gammaDistribution(loc, stdev):
+    temp = -1
+    while temp < 0:
+        temp = float(np.random.wald(loc, stdev, 1))
+    return temp
+
+def inverseGaussianDistribution(loc, stdev):
+    temp = -1
+    while temp < 0:
+        temp = float(np.random.wald(loc, stdev, 1))
+    return temp
+
+def frechetDistribution(shape, scale, loc):
+    temp = -1
+    while temp < 0:
+        temp = float(stats.invweibull.rvs(shape, loc=loc, scale=scale, size=1))
+    return temp
+
+def extremeValueDistribution(loc, scale):
+    temp = -1
+    while temp < 0:
+        temp = float(stats.genextreme.rvs(0, loc=loc, scale=scale, size=1))
+    return temp
 
 # v\left(l_{1}\sin\left(\frac{t_{1}^{2}}{a_{1}t_{2}}\right)+x_{1},h_{1}\cos\left(\frac{t_{1}^{2}}{a_{1}t_{2}}\right)+x_{2}\right)
 
@@ -76,7 +135,7 @@ def asteroidGen(name, seed):
     # types
     # C-type
     # distance: 2 - 3.5
-    # makeup: 
+    # makeup:
     # The S-types ("stony") are made up of silicate materials and nickel-iron.
     # The M-types are metallic (nickel-iron). The asteroids' compositional differences are related to how far from the Sun they formed. Some experienced high temperatures after they formed and partly melted, with iron sinking to the center and forcing basaltic (volcanic) lava to the surface.
 
@@ -146,64 +205,27 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     random.seed(planet.seed)
 
-    planet.axis = random.randint(0, 10)  # Planets inclination relative to the orbital plane # deg
-    planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical # deg
-
     if ismoon:
-        # idk about moon stuff
-        t_val = random.random()
-
-        if t_val <= 0.5:
-            planet.type = 'rock'
-            planet.mass = bigM * random.random() # Our solarsystem data Units: kg
-            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
-
-
-            # orbit shit
-            orbit = Orbit()
-            orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
-            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.bigM = bigM # mass of the centrial body Units: kg
-            orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
-            orbit.save()
-
-            planet.orbit = orbit
-
-        else:
-            planet.type = 'ice'
-            planet.mass = bigM * random.random() # Exoplanet data Units: kg
-            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
-
-
-            # orbit shit
-            orbit = Orbit()
-            orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
-            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
-            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
-            orbit.bigM = bigM # mass of the centrial body Units: kg
-            orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
-            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
-            orbit.save()
-
-            planet.orbit = orbit
-
+        pass
+        # im going to have to re do this
 
     else:
         t_val = random.random()
 
         if t_val <= 0.3:
+            # i think this is done accurate data
             planet.type = 'gas'
-            planet.mass = random.uniform(2.35938*(10**25), 6.86655*(10**26)) # Exoplanet data Units: kg
-            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441) # baised on exoplanet data extrapolation Units: AU
+
+            planet.axis = MixtureDistribution([0.0631400621068621, 0.936859937893138], [NormalDistribution(55.414243373649896, 47.580830239177686), NormalDistribution(87.20081252714141, 2.3894923435217335)])  # Planets inclination relative to the orbital plane # deg
+            planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical Units: deg Sorce: idk
+
+            planet.mass = inverseGaussianDistribution(928.824701947788, 300.0479022811526) # nasa data Units: kg
+            planet.radius = studentTDistribution(6.930761956160252, 1.366846871550845, 2.6348570001976364) # nasa data Units: AU
 
             # orbit shit
             orbit = Orbit()
-            orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.a = mixtureDistribution([0.4704883266643796, 0.5295116733356204], [logisticDistribution(0.0705557404282793, 0.04076153656660551), logNormalDistribution(0.4999743569155569, 1.869202031165252)]) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.exentricity = MixtureDistribution([0.6770449886638618, 0.3229550113361382], [normalDistribution(0.10876155772380555, 0.0983128535740209), normalDistribution(0.40545065381711914, 0.21867684220052921)]) # baised on 1, 3ed quartiles of the exoplanet data
             orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
             orbit.bigM = bigM # mass of the centrial body Units: kg
@@ -213,16 +235,43 @@ def planetGen(name, seed, bigM, ismoon=False):
 
             planet.orbit = orbit
 
-        elif 0.3 < t_val <= 0.7:
-            planet.type = 'rock'
-            planet.mass = random.uniform(3.301*(10**23), 5.972*(10**24)) # Our solarsystem data Units: kg
-            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
+        elif 0.3 < t_val <= 0.6:
+            # good i think
+            planet.type = 'super'
 
+            planet.axis = mixtureDistribution([0.11731760749857346, 0.8826823925014264], [cauchyDistribution(83.72530831316405, 1.6610374331407494), normalDistribution(88.47424024919356, 1.1263648417013203)])  # Planets inclination relative to the orbital plane Units: deg
+            planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical Units: deg Sorce: idk
+
+            planet.mass = frechetDistribution(1.0410474390574176, 4.679796043693668, -0.21857637698892585) # nasa data Units: kg
+            planet.radius = mixtureDistribution([0.6591604913899113, 0.3408395086100887], [logNormalDistribution(0.020374738630618384, 0.2852790839895245), cauchyDistribution(1.3255728404106326, 0.1905523566962049)]) # nasa data Units: AU
 
             # orbit shit
             orbit = Orbit()
-            orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.a = mixtureDistribution([0.38188724247370265, 0.6181127575262974], [normalDistribution(0.007755002403111972, 0.03899417827710038), logNormalDistribution(-1.9302655516861702, 0.7177081236362043)]) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.exentricity = weibullDistribution(2.055091374906744, 0.2356541343063726, -0.10782315849124682) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
+            orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
+            orbit.bigM = bigM # mass of the centrial body Units: kg
+            orbit.rotation = random.uniform(0, 360) # the rotation aroung the plane Units: deg
+            orbit.period = 2*math.pi* math.sqrt(((orbit.a * 149597900000) ** 3) / (orbit.bigM * 6.674 * (10**-11))) # the period of orbit baised on Units: s (seconds)
+            orbit.save()
+
+            planet.orbit = orbit
+
+        elif 0.6 < t_val <= 0.9:
+            # good i think
+            planet.type = 'nept'
+
+            planet.axis = mixtureDistribution([0.5222828598935413, 0.4777171401064587], [cauchyDistribution(88.41826474259561, 0.5906718096103573), normalDistribution(89.55737039572608, 0.31020863804072724)])  # Planets inclination relative to the orbital plane Units: deg
+            planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical Units: deg Sorce: idk
+
+            planet.mass = mixtureDistribution([0.4757270079315563, 0.5242729920684437], [normalDistribution(11.07917790736175, 4.536808439727342), logNormalDistribution(3.190815909191761, 1.3715705638998301)]) # nasa data Units: kg
+            planet.radius = mixtureDistribution([0.5802285251266968, 0.41977147487330324], [normalDistribution(1.759518599763769, 0.31262774425245027), cauchyDistribution(2.4736624001248617, 0.3686254156495506)]) # nasa data Units: AU
+
+            # orbit shit
+            orbit = Orbit()
+            orbit.a = mixtureDistribution([0.6860513516635095, 0.31394864833649055], [cauchyDistribution(0.19401727336333158, 0.07998092634483735), normalDistribution(0.043303343659861014, 0.03824274158482946)]) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.exentricity = extremeValueDistribution(0.06610828779106338, 0.09986244794438565) # baised on 1, 3ed quartiles of the exoplanet data
             orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
             orbit.bigM = bigM # mass of the centrial body Units: kg
@@ -233,15 +282,19 @@ def planetGen(name, seed, bigM, ismoon=False):
             planet.orbit = orbit
 
         else:
-            planet.type = 'ice'
-            planet.mass = random.uniform(8.682*(10**25), 1.024*(10**26)) # Exoplanet data Units: kg
-            planet.radius = 5.4 * (10**-16)* (planet.mass**0.441)  # baised on exoplanet data extrapolation Units: AU
+            # good i think
+            planet.type = 'tera'
 
+            planet.axis = mixtureDistribution([0.0977459957793555, 0.9022540042206444], [normalDistribution(74.84281898022508, 11.62506209999429), normalDistribution(88.05388760287485, 1.569147970706866)])  # Planets inclination relative to the orbital plane Units: deg
+            planet.tilt = random.uniform(0, 90)  # Planet's axis tilt in degrees from vertical Units: deg Sorce: idk
+
+            planet.mass = weibullDistribution(0.49037496592107127, 4.413426662039768, 0.01749999999993345) # nasa data Units: kg
+            planet.radius = studentTDistribution(0.6584412776941425, 0.10191541528132546, 1.2203071923546798) # nasa data Units: AU
 
             # orbit shit
             orbit = Orbit()
-            orbit.a = random.uniform(0.052995525, 0.231969) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
-            orbit.exentricity = random.uniform(0, 0.042) # baised on 1, 3ed quartiles of the exoplanet data
+            orbit.a = logNormalDistribution(-3.122001182763973, 0.762901057268751) # baised on 1, 3ed quartiles of the exoplanet data Units: AU
+            orbit.exentricity = weibullDistribution(0.6772026496221208, 0.05688620082154043) # baised on 1, 3ed quartiles of the exoplanet data
             orbit.b = math.sqrt((orbit.a**2) - (orbit.a**2) * (orbit.exentricity**2)) # using a derived vertion of this formular e == Sqrt[1 - b^2/a^2] Units: AU
             orbit.p = (orbit.b**2) / orbit.a # using this formular p=\frac{b^{2}}{a}
             orbit.bigM = bigM # mass of the centrial body Units: kg
