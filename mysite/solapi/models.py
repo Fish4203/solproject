@@ -4,24 +4,24 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import random
 import math
+from users.models import *
+from shipdata.models import *
 # Create your models here.
+
+class Element(models.Model):
+    name = models.CharField(max_length=100)
+    stable = models.IntegerField()
+    # other verables tba
+
+    def __str__(self):
+        return self.name
 
 class Atmosphere(models.Model):
 
     presure = models.FloatField() # presure of the atmosphere Units: KPa
 
     # all the rest are in percentages
-    nitrogen = models.FloatField()
-    oxygen = models.FloatField()
-    argon = models.FloatField()
-    carbonDioxide = models.FloatField()
-    neon = models.FloatField()
-    helium = models.FloatField()
-    methane = models.FloatField()
-    sulpherDioxide = models.FloatField()
-    hydrogen = models.FloatField()
-    sodium = models.FloatField()
-    potasium = models.FloatField()
+    elemants = models.ManyToManyField(Element)
 
 class Orbit(models.Model):
     # orbit shit
@@ -38,6 +38,7 @@ class Orbit(models.Model):
 class Star(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
     starClass = models.CharField(max_length=100)
     mass = models.FloatField() # mass of the star  Units: kg
     radius = models.FloatField() # radius of the star Units: AU
@@ -53,6 +54,7 @@ class Star(models.Model):
 class Planet(models.Model):
     name = models.CharField(max_length=100) # the name of the planet
     seed = models.CharField(max_length=100) # the random seed
+    description = models.CharField(max_length=500)
     planetType = models.CharField(max_length=100) # ice or gas or rock
     mass = models.FloatField() # the mass of the planet Units: kg
     radius = models.FloatField() # radius of the planet Units: AU
@@ -60,6 +62,7 @@ class Planet(models.Model):
     tilt = models.FloatField() # the tilt the planet of the spin from the sun Units: deg
     axis = models.FloatField() # the tilt of the orbetal plane Units: deg
 
+    elemants = models.ManyToManyField(Element)
     atmosphere = models.OneToOneField(Atmosphere, on_delete=models.CASCADE)
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
 
@@ -72,12 +75,14 @@ class Planet(models.Model):
 class Asteroid(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
     type = models.CharField(max_length=100)
 
     # richness
     l = models.FloatField() # -10 to 10
     k = models.FloatField() # -1 to 1
 
+    elemants = models.ManyToManyField(Element)
     orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
 
 
@@ -85,6 +90,7 @@ class Asteroid(models.Model):
 class System(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
     stars = models.ManyToManyField(Star)
     planets = models.ManyToManyField(Planet)
     asteroids = models.ManyToManyField(Asteroid)
