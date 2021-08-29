@@ -91,11 +91,14 @@ class System(models.Model):
     name = models.CharField(max_length=100)
     seed = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
+
     stars = models.ManyToManyField(Star)
     planets = models.ManyToManyField(Planet)
     asteroids = models.ManyToManyField(Asteroid)
 
-    orbit = models.OneToOneField(Orbit, on_delete=models.CASCADE)
+    locX = models.FloatField()
+    locY = models.FloatField()
+    locZ = models.FloatField()
 
     def __str__(self):
         return self.name

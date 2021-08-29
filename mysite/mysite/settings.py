@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'users.apps.UsersConfig',
+    'shipdata.apps.ShipdataConfig',
     'solapi.apps.SolapiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,6 +71,13 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 

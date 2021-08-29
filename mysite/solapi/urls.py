@@ -4,8 +4,8 @@ from . import views
 app_name = 'solapi'
 urlpatterns = [
     path('', views.info, name='info'),
-    path('getSystem/<str:systemName>', views.getSystem, name='getSystem'),
-    path('getStar/<str:starName>', views.getStar, name='getStar'),
-    path('getPlanet/<str:planetName>', views.getPlanet, name='getPlanet'),
-    path('generate/<str:name>/<str:seed>', views.generate, name='generate'),
+    path('system/<int:pk>',  views.SystemView.as_view(), name='system'),
+    path('planet/<int:pk>',  views.PlanetView.as_view(), name='planet'),
+    path('asteroid/<int:pk>',  views.AsteroidView.as_view(), name='asteroid'),
+    path('star/<int:pk>',  views.StarView.as_view(), name='star'),
 ]

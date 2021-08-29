@@ -203,7 +203,9 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     planet = Planet(name=name, seed=seed)
 
-    random.seed(planet.seed)
+    random.seed(seed)
+    np.random.seed(hash(seed))
+
 
     if ismoon:
         pass
@@ -308,18 +310,6 @@ def planetGen(name, seed, bigM, ismoon=False):
     #atmoshpere stuff
     atmosphere = Atmosphere()
     atmosphere.presure = 0 # presure of the atmosphere Units: KPa
-    # all the rest are in percentages
-    atmosphere.nitrogen = 0
-    atmosphere.oxygen = 0
-    atmosphere.argon = 0
-    atmosphere.carbonDioxide = 0
-    atmosphere.neon = 0
-    atmosphere.helium = 0
-    atmosphere.methane = 0
-    atmosphere.sulpherDioxide = 0
-    atmosphere.hydrogen = 0
-    atmosphere.sodium = 0
-    atmosphere.potasium = 0
     atmosphere.save()
 
     planet.atmosphere = atmosphere
@@ -327,9 +317,9 @@ def planetGen(name, seed, bigM, ismoon=False):
 
     planet.save()
 
-    if ismoon == False:
-        for i in range(0, random.randint(0,50)):
-            planet.moons.add(planetGen(name=name+'moon'+str(i), seed=str(random.random()), bigM=planet.mass, ismoon=True))
+    # if ismoon == False:
+    #     for i in range(0, random.randint(0,50)):
+    #         planet.moons.add(planetGen(name=name+'moon'+str(i), seed=str(random.random()), bigM=planet.mass, ismoon=True))
 
     planet.save()
 
