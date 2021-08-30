@@ -1,11 +1,76 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.utils import timezone
+from .models import *
+from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from .models import *
+from django.core.serializers import serialize
+from django.db.models import Q
+# Create your views here.
+
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, YourCustomType):
+            return str(obj)
+        return super().default(obj)
+
+
+
+class UserView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            data = serialize('python', Player.objects.filter(name=request.user.username), cls=LazyEncoder)
+
+            if len(data) != 1:
+                data = {'status': 'cant find system'}
+            else:
+                data = data[0]
+
+        except:
+            data = {'status': 'error geting data'}
+
+        return JsonResponse(data)
+
+class UserFactionView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            data = {'factions': serialize('python', PlayerFaction.objects.filter(player=Player.objects.filter(name=request.user.username)[0]), cls=LazyEncoder)}
+
+        except:
+            data = {'status': 'error geting data'}
+
+        return JsonResponse(data)
+
+class FactionView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        try:
+            data = serialize('python', Faction.objects.filter(id=pk), cls=LazyEncoder)[0]
+        except:
+            data = {'status': 'error geting data'}
+
+        return JsonResponse(data)
+
+class FactionFactionView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        try:
+            data = {'factions': serialize('python', FactionFaction.objects.filter(Q(source=Faction.objects.filter(id=pk)[0]) | Q(target=Faction.objects.filter(id=pk)[0])), cls=LazyEncoder)}
+
+        except:
+            data = {'status': 'error geting data'}
+
+        return JsonResponse(data)
+
 # Create your views here.
 
 
@@ -23,48 +88,3 @@ def newUser(request):
             return render(request, 'user/newUser.html', {'message': 'Failed to make account'})
     else:
         return render(request, 'user/newUser.html')
-
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
-
-
-
-# def getPlayer(request, playerName):
-#
-#     try:
-#         player = Player.objects.get(name=str(playerName))
-#
-#         data = {
-#             'name': player.name,
-#             'cash': player.cash,
-#             'factions': [i.faction_set.all()[0].name : {'cash': i.faction_set.all()[0].cash, 'stations': i.faction_set.all()[0].stations, 'rep': i.status, 'status': i.rep} for i in player.factions.all()],
-#         }
-#     except:
-#         data = {
-#             'error': 'na'
-#         }
-#
-#
-#     return JsonResponse(data)
-#
-# def getFaction(request, FactionName):
-#
-#     try:
-#         faction = Faction.objects.get(name=FactionName)
-#         data = {
-#             'name': faction.name,
-#             'cash': faction.cash,
-#             'factions': [i.faction_set.all().exclude(name=faction.name)[0].name : {'cash': i.faction_set.all().exclude(name=faction.name)[0].cash, 'stations': i.faction_set.all().exclude(name=faction.name)[0].faction_set.all()[0].stations, 'rep': i.status, 'status': i.rep} for i in faction.factions.all()],
-#             'player': [i.player_set.all()[0].name : {'cash': i.player_set.all()[0].cash, 'stations': i.player_set.all()[0].stations, 'rep': i.status, 'status': i.rep} for i in faction.players.all()],
-#         }
-#     except:
-#         data = {
-#             'error': 'na'
-#         }
-#
-#
-#     return JsonResponse(data)

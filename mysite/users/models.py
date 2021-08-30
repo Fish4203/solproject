@@ -8,23 +8,26 @@ import math
 # Create your models here.
 
 
-# class FactionRep(models.Model):
-#     rep = models.IntegerField()
-#     status = models.CharField(max_length=100)
-#
-#
-# class Faction(models.Model):
-#     name = models.CharField(max_length=100)
-#     cash = models.IntegerField()
-#     description = models.CharField(max_length=500)
-#     stations = models.IntegerField() # placeholder
-#
-#     factions = models.ManyToManyField(FactionRep)
-#
-#     players = models.ManyToManyField(FactionRep)
-#
-#     def __str__(self):
-#         return self.name
+
+
+class Faction(models.Model):
+    name = models.CharField(max_length=100)
+    cash = models.IntegerField()
+    description = models.CharField(max_length=500)
+    stations = models.IntegerField() # placeholder
+
+    factions = models.ManyToManyField('self', through='FactionFaction', symmetrical=False)
+
+    def __str__(self):
+        return self.name
+
+class FactionFaction(models.Model):
+    source = models.ForeignKey(Faction, on_delete=models.CASCADE, related_name='source')
+    target = models.ForeignKey(Faction, on_delete=models.CASCADE, related_name='target')
+
+    rep = models.IntegerField()
+    status = models.CharField(max_length=100)
+
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,7 +40,15 @@ class Player(models.Model):
     locY = models.FloatField()
     locZ = models.FloatField()
 
-    # factions = models.ManyToManyField(FactionRep)
+    factions = models.ManyToManyField(Faction, through='PlayerFaction')
 
     def __str__(self):
         return self.name
+
+
+class PlayerFaction(models.Model):
+    faction = models.ForeignKey(Faction, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+
+    rep = models.IntegerField()
+    status = models.CharField(max_length=100)

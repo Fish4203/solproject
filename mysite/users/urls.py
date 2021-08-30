@@ -6,10 +6,13 @@ from rest_framework_simplejwt.views import (
 )
 
 
-app_name = 'solapi'
+app_name = 'users'
 urlpatterns = [
-    path('', views.HelloView.as_view(), name='hello'),
-    path('newuser', views.newUser, name='newUser'),
+    path('newuser/', views.newUser, name='newUser'),
+    path('userinfo/', views.UserView.as_view(), name='userinfo'),
+    path('userfaction/', views.UserFactionView.as_view(), name='userfaction'),
+    path('factioninfo/<int:pk>', views.FactionView.as_view(), name='factioninfo'),
+    path('factionfaction/<int:pk>', views.FactionFactionView.as_view(), name='factionfaction'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('getPlayer/<str:playerName>', views.getSystem, name='getPlayer'),
