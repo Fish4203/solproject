@@ -19,6 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sol/', include('solapi.urls')),
-    path('user/', include(('users.urls', 'users'), namespace='users'))
-    # path('ship', include('shipdata.urls')),
+    path('user/', include(('users.urls', 'users'), namespace='users')),
+    path('ship/', include('shipdata.urls')),
 ]

@@ -15,8 +15,8 @@ from django.core.serializers import serialize
 
 class LazyEncoder(DjangoJSONEncoder):
     def default(self, obj):
-        if isinstance(obj, YourCustomType):
-            return str(obj)
+        if isinstance(obj, Planet):
+            return 'str(obj)'
         return super().default(obj)
 
 
@@ -32,6 +32,8 @@ class SystemView(APIView):
                 data = {'status': 'cant find system'}
             else:
                 data = data[0]
+
+            data['fields']['planets'] = serialize('python', System.objects.get(id=pk).planets.all(), cls=LazyEncoder)
 
         except:
             data = {'status': 'error geting data'}
